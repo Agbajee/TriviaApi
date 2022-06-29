@@ -53,15 +53,15 @@ Base URL: This application can only run locally at the moment as it is not hoste
 Error Handling: Errors are returned as a JSON objec. e.g.
 ```json
 {
-    success: false,
-    error: 404,
-    message: "Resources not found", 
+    "success": false,
+    "error": 404,
+    "message": "Resources not found", 
 }
 
 {
-    success: false,
-    error: 405,
-    message: "Method not allowed", 
+    "success": false,
+    "error": 405,
+    "message": "Method not allowed", 
 }
 ```
 The API will return an error message when these types or requests failed
