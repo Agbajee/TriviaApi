@@ -46,8 +46,6 @@ Pay special attention to what data the frontend is expecting from each API respo
 
 By making notes ahead of time, you will practice the core skill of being able to read and understand code and will have a simple plan to follow to build out the endpoints of your backend API.
 
-> View the [Frontend README](./frontend/README.md) for more details.
-
 ## API Reference
 
 Base URL: This application can only run locally at the moment as it is not hosted as a base URL. The backend app is hosted at the default backend, http://localhost:5432
@@ -144,3 +142,4 @@ Sample: curl http://127.0.0.1:5000/categories/1/questions
   "currentCategory": "Social"
 }
 ```
+> View the [Frontend README](./frontend/README.md) for more details.
