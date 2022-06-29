@@ -283,14 +283,6 @@ def create_app(test_config=None):
             "message": "Method not allowed"
         }), 405
 
-    @app.errorhandler(500)
-    def server_error(error):
-        return jsonify({
-            "success": False,
-            "error": 500,
-            "message": "There was an error from the server"
-        }), 500
-
     @app.errorhandler(422)
     def unproccesable(error):
         return jsonify({

@@ -47,3 +47,100 @@ Pay special attention to what data the frontend is expecting from each API respo
 By making notes ahead of time, you will practice the core skill of being able to read and understand code and will have a simple plan to follow to build out the endpoints of your backend API.
 
 > View the [Frontend README](./frontend/README.md) for more details.
+
+#### API Reference
+
+Base URL: This application can only run locally at the moment as it is not hosted as a base URL. The backend app is hosted at the default backend, http://localhost:5432
+
+Error Handling: Errors are returned as a JSON objec. e.g.
+```json
+{
+    success: false,
+    error: 404,
+    message: "Resources not found", 
+}
+
+{
+    success: false,
+    error: 405,
+    message: "Method not allowed", 
+}
+```
+The API will return an error message when these types or requests failed
+1. 400: Bad Request
+2. 404: Resources Not Found
+3. 422: Unprocessable
+4. 405: Method Not Allowed
+5. 500: Internal Server Error
+
+Endpoints
+
+`GET '/questions'` 
+- Expected to return a list question's answer, category, and difficulty and Total number of questions available  
+- Results are paginated in groups of 10 with page number starting from 1.
+Sample: curl http://127.0.0.1:5000/questions
+```json
+{
+  "current_category": null, 
+  "questions": [
+    {
+      "answer": "Agra", 
+      "category": 3, 
+      "difficulty": 2, 
+      "id": 15, 
+      "question": "The Taj Mahal is located in which Indian city?"
+    }
+  ], 
+  "success": true, 
+  "total_questions": 1
+}
+```
+
+`GET '/categories'`
+- Expected to return all available categories
+Sample: curl http://127.0.0.1:5000/categories
+```json
+{
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }, 
+  "success": true
+}
+```
+
+`DELETE '/questions/delete/{question_id}'`
+- Expeceted to delete a question from the database with the given question id
+
+Sample: curl -X "DELETE" http://127.0.0.1:5000/questions/delete/1 
+```json
+{
+    "success": true,
+    "deleted": 1,
+    "total_questions": 10
+}
+```
+
+`GET '/categories/{id}/questions'`
+
+- Gets questions for a cateogry specified by id request argument
+Sample: curl http://127.0.0.1:5000/categories/1/questions
+```json
+{
+  "questions": [
+    {
+      "id": 1,
+      "question": "This is a question",
+      "answer": "This is an answer",
+      "difficulty": 3,
+      "category": 2
+    }
+  ],
+  "totalQuestions": 10,
+  "currentCategory": "Social"
+}
+```
