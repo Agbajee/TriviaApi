@@ -48,7 +48,7 @@ By making notes ahead of time, you will practice the core skill of being able to
 
 > View the [Frontend README](./frontend/README.md) for more details.
 
-#### API Reference
+## API Reference
 
 Base URL: This application can only run locally at the moment as it is not hosted as a base URL. The backend app is hosted at the default backend, http://localhost:5432
 
