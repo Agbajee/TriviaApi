@@ -61,6 +61,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(len(data['categories']))
 
+    def test_get_categories_not_found(self):
+        res = self.client().get('/categories/a')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'resource not found')
+
     def test_delete_question(self):
         res = self.client().delete('/questions/1')
         data = json.loads(res.data)
@@ -115,6 +123,15 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['questions'])
         self.assertTrue(data['total_questions'])
+    
+    def test_404_search_question_not_found(self):
+        search = {'searchTerm': None,}
+        res = self.client().post('/questions/search', json=search)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["message"], "resource not found")
 
     def test_get_questions_per_category(self):
         res = self.client().get('/categories/1/questions')
@@ -135,13 +152,22 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["message"], "resource not found")
 
     def test_play_quiz(self):
-        new_quiz_round = {'previous_questions': [],'quiz_category': {'type': 'Sport', 'id': 2}}
+        quiz = {'previous_questions': [],'quiz_category': {'type': 'Sport', 'id': 2}}
 
-        res = self.client().post('/quizzes', json=new_quiz_round)
+        res = self.client().post('/quizzes', json=quiz)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
+
+    def test_404_play_quiz_not_found(self):
+        quiz = {'previous_questions': None}
+        res = self.client().post('/quizzes', json=quiz)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["message"], "unprocessable")
 
 
 # Make the tests conveniently executable
