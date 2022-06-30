@@ -51,7 +51,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'resource not found')
+        self.assertTrue(data['message'], 'resource not found')
 
     def test_get_categories(self):
         res = self.client().get('/categories')
@@ -69,29 +69,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertTrue(data['message'], 'resource not found')
 
-    def test_delete_question(self):
-        res = self.client().delete('/questions/1')
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertEqual(data['deleted'], str(1))
-        self.assertTrue(data['total_questions'])
-        
-
-    def test_422_if_question_does_not_exist(self):
-        res = self.client().delete('/questions/1000')
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'unprocessable')
-
     def test_create_new_question(self):
         new_question = {
             'question': 'How many questions do you want to add',
             'answer': 'thirty question',
-            'category': 4
+            'category': 4,
+            'difficulty': 3
         }
         res = self.client().post('/questions', json=new_question)
         data = json.loads(res.data)
@@ -99,6 +82,31 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
         self.assertTrue(data['created'])
+        self.assertTrue(data['total_questions'])
+
+    def test_422_if_question_does_not_exist(self):
+        res = self.client().delete('/questions/1000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'unprocessable')
+
+    def test_delete_question(self):
+        question = Question(
+            question='This is a new question', 
+            answer='An Answer',
+            difficulty=4, 
+            category=6
+        )
+        question.insert()
+
+        res = self.client().delete(f'/questions/{question.id}')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['deleted'], str(question.id))
         self.assertTrue(data['total_questions'])
 
     def test_405_if_add_question_not_allowed(self):
@@ -112,7 +120,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 405)
         self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "Method not allowed")
+        self.assertTrue(data["message"], "Method not allowed")
 
     def test_search_questions(self):
         search = {'searchTerm': 'a'}
@@ -131,7 +139,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "resource not found")
+        self.assertTrue(data["message"], "resource not found")
 
     def test_get_questions_per_category(self):
         res = self.client().get('/categories/1/questions')
@@ -149,7 +157,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "resource not found")
+        self.assertTrue(data["message"], "resource not found")
 
     def test_play_quiz(self):
         quiz = {'previous_questions': [],'quiz_category': {'type': 'Sport', 'id': 2}}
@@ -167,7 +175,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "unprocessable")
+        self.assertTrue(data["message"], "unprocessable")
 
 
 # Make the tests conveniently executable

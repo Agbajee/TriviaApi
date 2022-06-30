@@ -99,7 +99,7 @@ def create_app(test_config=None):
                 'categories': {
                     category.id: category.type for category in categories
                 },
-                'current_category': None
+                'current_category': [cat.type for cat in Category.query.all()],
             })
 
     """
@@ -178,22 +178,22 @@ def create_app(test_config=None):
 
     @app.route('/questions/search', methods=['POST'])
     def search_questions():
-        body = request.get_json()
-        search = body.get('searchTerm')
+        # body = request.get_json()
+        search = request.json.get('searchTerm', '')
         search_results = Question.query.filter(
-            Question.question.ilike(f'%{search}%')
+            Question.question.ilike('%'+ format(search) +'%')
         ).all()
 
-        if search_results:
-            questions = paginate_questions(request, search_results)
-            return jsonify({
-                'success': True,
-                'questions': questions,
-                'total_questions': len(search_results),
-                'current_category': None
-            })
-        else:
-            abort(404)
+        if search_results is not None:
+            for questions in search_results:
+                questions = paginate_questions(request, search_results)
+                return jsonify({
+                    'success': True,
+                    'questions': questions,
+                    'total_questions': len(search_results),
+                    'current_category': [cat.type for cat in Category.query.all()],
+                })
+        abort(404)
 
     """
     @TODO:
